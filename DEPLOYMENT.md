@@ -14,23 +14,46 @@ Vercel **proxies** `/api/*` and `/uploads/*` to Render so auth cookies stay on y
 
 ## 1. Deploy backend on Render
 
-### Option A — Blueprint (recommended)
+### Step 1 — Set up PostgreSQL (required first)
+
+Render allows **only one free PostgreSQL database per account**. The blueprint does **not** create a database — you must provide `DATABASE_URL` yourself.
+
+**Option 1 — Use an existing Render Postgres (if you already have one)**
+
+1. [Render Dashboard](https://dashboard.render.com) → your PostgreSQL instance.
+2. Copy **Internal Database URL** (use Internal, not External, when API is on Render).
+3. You will paste this as `DATABASE_URL` when deploying the web service.
+
+**Option 2 — Create a new Render Postgres (only if you have zero free databases)**
+
+1. **New → PostgreSQL** → name it `af-md-db`, free tier.
+2. Copy the **Internal Database URL**.
+
+**Option 3 — Neon (recommended if Render DB limit is reached)**
+
+1. [neon.tech](https://neon.tech) → free project → copy connection string.
+2. Use as `DATABASE_URL` (works from Render and Vercel).
+
+> If blueprint sync failed with *"cannot have more than one active free tier database"*, you already have a Render Postgres — reuse its connection string (Option 1) or use Neon (Option 3).
+
+---
+
+### Step 2 — Deploy API with Blueprint
 
 1. Push this repo to GitHub.
-2. In [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**.
-3. Connect the repo — Render reads `render.yaml` and creates:
-   - **af-md-db** — PostgreSQL (free tier)
-   - **af-md-api** — Node web service
-4. Set these **manual** environment variables on **af-md-api**:
+2. [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**.
+3. Connect the repo — creates **af-md-api** web service only.
+4. When prompted, set **all** manual environment variables:
 
-   | Variable | Example |
-   |----------|---------|
-   | `JWT_SECRET` | `openssl rand -base64 32` |
-   | `ADMIN_EMAIL` | `admin@afrimindai.com` |
-   | `ADMIN_PASSWORD` | strong password |
-   | `NEXT_PUBLIC_SITE_URL` | `https://your-app.vercel.app` |
-   | `FRONTEND_URL` | `https://your-app.vercel.app` |
-   | `OPENAI_API_KEY` | optional |
+   | Variable | Required | Example |
+   |----------|----------|---------|
+   | `DATABASE_URL` | **Yes** | `postgresql://user:pass@host/db` |
+   | `JWT_SECRET` | **Yes** | `openssl rand -base64 32` |
+   | `ADMIN_EMAIL` | **Yes** | `admin@afrimindai.com` |
+   | `ADMIN_PASSWORD` | **Yes** | strong password |
+   | `NEXT_PUBLIC_SITE_URL` | **Yes** | `https://your-app.vercel.app` |
+   | `FRONTEND_URL` | **Yes** | `https://your-app.vercel.app` |
+   | `OPENAI_API_KEY` | No | optional |
 
 5. Deploy. First build runs `prisma db push`, seeds admin + courses, and builds Next.js.
 6. Copy your Render service URL, e.g. `https://af-md-api.onrender.com`.
@@ -109,6 +132,7 @@ Render API → PostgreSQL
 | Uploads missing after redeploy | Free tier has no persistent disk — upgrade to paid and mount a disk, or use cloud storage |
 | CORS errors | Set `FRONTEND_URL` on Render to your exact Vercel URL |
 | Build fails on Vercel | Ensure `BACKEND_URL` is set; `prisma generate` runs via `postinstall` |
+| Blueprint: one free database limit | Reuse existing Render Postgres URL or use [Neon](https://neon.tech) for `DATABASE_URL` |
 
 ---
 

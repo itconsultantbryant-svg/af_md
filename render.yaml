@@ -1,11 +1,8 @@
-# Render Blueprint — backend API + PostgreSQL
+# Render Blueprint — API web service only
 # https://render.com/docs/blueprint-spec
-
-databases:
-  - name: af-md-db
-    plan: free
-    databaseName: afmd
-    user: afmd
+#
+# PostgreSQL is NOT created here — Render allows only ONE free database
+# per account. Create Postgres manually (or use Neon) and set DATABASE_URL.
 
 services:
   - type: web
@@ -22,9 +19,7 @@ services:
       - key: DEPLOY_TARGET
         value: render
       - key: DATABASE_URL
-        fromDatabase:
-          name: af-md-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         sync: false
       - key: ADMIN_EMAIL
