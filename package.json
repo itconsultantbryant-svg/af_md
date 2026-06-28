@@ -6,21 +6,57 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next",
+    "dev:clean": "npm run clean && next dev",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "npx tsx prisma/seed.ts",
+    "db:reset-progress": "npx tsx prisma/reset-progress.ts",
+    "logo:transparent": "python3 scripts/remove-logo-bg.py",
+    "db:setup": "prisma db push && npx tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@radix-ui/react-accordion": "^1.2.13",
+    "@radix-ui/react-dialog": "^1.1.16",
+    "@react-three/drei": "^9.114.3",
+    "@react-three/fiber": "^8.17.10",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.40.0",
+    "jose": "^6.2.3",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "lucide-react": "^1.17.0",
+    "mammoth": "^1.12.0",
+    "next": "14.2.35",
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^6.0.227",
     "react": "^18",
+    "react-countup": "^6.5.3",
     "react-dom": "^18",
-    "next": "14.2.35"
+    "react-intersection-observer": "^10.0.3",
+    "tailwind-merge": "^3.6.0",
+    "three": "^0.169.0",
+    "xlsx": "^0.18.5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "@types/three": "^0.184.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.35"
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.22.4",
+    "typescript": "^5"
   }
 }
