@@ -21,7 +21,6 @@ Vercel **proxies** `/api/*` and `/uploads/*` to Render so auth cookies stay on y
 3. Connect the repo — Render reads `render.yaml` and creates:
    - **af-md-db** — PostgreSQL (free tier)
    - **af-md-api** — Node web service
-   - **Persistent disk** — 1 GB for course uploads
 4. Set these **manual** environment variables on **af-md-api**:
 
    | Variable | Example |
@@ -37,6 +36,8 @@ Vercel **proxies** `/api/*` and `/uploads/*` to Render so auth cookies stay on y
 6. Copy your Render service URL, e.g. `https://af-md-api.onrender.com`.
 7. Verify: `GET https://af-md-api.onrender.com/api/health` → `{ "status": "ok" }`.
 
+> **Course uploads on free tier:** Render free web services do not support persistent disks. Uploaded files are stored in the container filesystem and **may be lost on redeploy or restart**. For production uploads, upgrade the web service to a paid plan and add a disk at `/opt/render/project/src/public/uploads`, or integrate cloud storage (S3, Cloudinary, etc.).
+
 ### Option B — Manual web service
 
 1. **New → PostgreSQL** — copy the internal connection string.
@@ -46,7 +47,7 @@ Vercel **proxies** `/api/*` and `/uploads/*` to Render so auth cookies stay on y
    - **Start command:** `npm run start:render`
    - **Health check path:** `/api/health`
 4. Add env vars from the table above + `DATABASE_URL` from Postgres.
-5. Add a **persistent disk** mounted at `/opt/render/project/src/public/uploads`.
+5. *(Paid plan only)* Add a **persistent disk** mounted at `/opt/render/project/src/public/uploads` for durable course uploads.
 
 ---
 
@@ -94,7 +95,7 @@ Browser → your-app.vercel.app
             └── /uploads/*       → rewrite → Render disk
 
 Render API → PostgreSQL
-           → public/uploads (persistent disk)
+           → public/uploads (ephemeral on free tier; persistent disk on paid plan)
 ```
 
 ---
@@ -105,7 +106,7 @@ Render API → PostgreSQL
 |-------|-----|
 | 401 on admin/dashboard | Ensure `JWT_SECRET` matches on Vercel and Render |
 | API 502 / timeout | Render free tier sleeps after 15 min — first request wakes it |
-| Uploads missing after redeploy | Confirm persistent disk is mounted at `public/uploads` |
+| Uploads missing after redeploy | Free tier has no persistent disk — upgrade to paid and mount a disk, or use cloud storage |
 | CORS errors | Set `FRONTEND_URL` on Render to your exact Vercel URL |
 | Build fails on Vercel | Ensure `BACKEND_URL` is set; `prisma generate` runs via `postinstall` |
 
