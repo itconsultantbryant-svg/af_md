@@ -43,7 +43,9 @@ Render allows **only one free PostgreSQL database per account**. The blueprint d
 1. Push this repo to GitHub.
 2. [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**.
 3. Connect the repo — creates **af-md-api** web service only.
-4. When prompted, set **all** manual environment variables:
+4. When prompted, set **all** manual environment variables **before the first deploy**:
+
+   > **Important:** `DATABASE_URL` must be set in Render → **af-md-api** → **Environment** before deploying. The build does not need it; the server runs `prisma db push` on startup using this URL.
 
    | Variable | Required | Example |
    |----------|----------|---------|
