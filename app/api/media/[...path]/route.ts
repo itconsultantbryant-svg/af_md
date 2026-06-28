@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile, stat } from "fs/promises";
 import path from "path";
 import { mimeFromFilename } from "@/lib/media-url";
+import { resolveUploadFile } from "@/lib/paths";
 
 export async function GET(
   req: NextRequest,
@@ -13,12 +14,7 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    const uploadsRoot = path.join(process.cwd(), "public", "uploads");
-    const filePath = path.join(process.cwd(), "public", ...segments);
-    const resolved = path.resolve(filePath);
-    if (!resolved.startsWith(path.resolve(uploadsRoot))) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const resolved = resolveUploadFile(segments.slice(1));
 
     const fileStat = await stat(resolved);
     const ext = path.extname(resolved);

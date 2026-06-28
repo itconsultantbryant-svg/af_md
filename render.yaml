@@ -1,0 +1,43 @@
+# Render Blueprint — backend API + PostgreSQL
+# https://render.com/docs/blueprint-spec
+
+databases:
+  - name: af-md-db
+    plan: free
+    databaseName: afmd
+    user: afmd
+
+services:
+  - type: web
+    name: af-md-api
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci && npm run build:render
+    startCommand: npm run start:render
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DEPLOY_TARGET
+        value: render
+      - key: DATABASE_URL
+        fromDatabase:
+          name: af-md-db
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+    disk:
+      name: af-md-uploads
+      mountPath: /opt/render/project/src/public/uploads
+      sizeGB: 1

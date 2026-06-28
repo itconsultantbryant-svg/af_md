@@ -6,6 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "postinstall": "prisma generate",
+    "build:render": "prisma generate && prisma db push && npm run db:seed && next build",
+    "build:vercel": "prisma generate && next build",
+    "start:render": "next start -H 0.0.0.0 -p ${PORT:-10000}",
     "lint": "next lint",
     "clean": "rm -rf .next",
     "dev:clean": "npm run clean && next dev",
@@ -15,6 +19,9 @@
     "db:reset-progress": "npx tsx prisma/reset-progress.ts",
     "logo:transparent": "python3 scripts/remove-logo-bg.py",
     "db:setup": "prisma db push && npx tsx prisma/seed.ts"
+  },
+  "engines": {
+    "node": ">=18.17.0"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

@@ -7,14 +7,16 @@ AfriMind Tech&AI Consulting Agency — full-stack Next.js site with LMS, admin p
 - Next.js 14 · TypeScript · Tailwind CSS · Framer Motion
 - Prisma · SQLite · JWT auth
 
-## Setup
+## Deployment
+
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for Render (backend) + Vercel (frontend) setup.
+
+Quick local Postgres:
 
 ```bash
-npm install
-cp .env.example .env   # configure DATABASE_URL, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD
-npx prisma db push
-npx prisma db seed
-npm run dev
+docker compose up -d
+cp .env.example .env
+npm run db:setup && npm run dev
 ```
 
 ## Scripts
