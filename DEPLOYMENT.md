@@ -135,6 +135,8 @@ Render API → PostgreSQL
 | CORS errors | Set `FRONTEND_URL` on Render to your exact Vercel URL |
 | Build fails on Vercel | Ensure `BACKEND_URL` is set; `prisma generate` runs via `postinstall` |
 | Blueprint: one free database limit | Reuse existing Render Postgres URL or use [Neon](https://neon.tech) for `DATABASE_URL` |
+| Build failed: DATABASE_URL not found | Add `DATABASE_URL` in Render **Environment**, then **Manual Deploy** → Clear build cache & deploy |
+| Build failed: Cannot find module tailwindcss | Redeploy latest commit; build uses `npm ci --include=dev` and Tailwind is in dependencies |
 
 ---
 
