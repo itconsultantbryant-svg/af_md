@@ -43,21 +43,28 @@ Render allows **only one free PostgreSQL database per account**. The blueprint d
 1. Push this repo to GitHub.
 2. [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**.
 3. Connect the repo — creates **af-md-api** web service only.
-4. When prompted, set **all** manual environment variables **before the first deploy**:
+4. **Before the first deploy succeeds**, open **af-md-api → Environment** and add:
 
-   > **Important:** `DATABASE_URL` must be set in Render → **af-md-api** → **Environment** before deploying. The build does not need it; the server runs `prisma db push` on startup using this URL.
+   | Variable | Required | Where to get it |
+   |----------|----------|-----------------|
+   | `DATABASE_URL` | **Yes — deploy will fail without this** | Render Postgres → **Connect** → **Internal Database URL** (or Neon connection string) |
+   | `JWT_SECRET` | **Yes** | Run `openssl rand -base64 32` locally |
+   | `ADMIN_EMAIL` | **Yes** | e.g. `admin@afrimindai.com` |
+   | `ADMIN_PASSWORD` | **Yes** | Strong password for admin login |
+   | `NEXT_PUBLIC_SITE_URL` | **Yes** | Your Vercel URL (can update after Vercel deploy) |
+   | `FRONTEND_URL` | **Yes** | Same as Vercel URL |
+   | `OPENAI_API_KEY` | No | Optional |
 
-   | Variable | Required | Example |
-   |----------|----------|---------|
-   | `DATABASE_URL` | **Yes** | `postgresql://user:pass@host/db` |
-   | `JWT_SECRET` | **Yes** | `openssl rand -base64 32` |
-   | `ADMIN_EMAIL` | **Yes** | `admin@afrimindai.com` |
-   | `ADMIN_PASSWORD` | **Yes** | strong password |
-   | `NEXT_PUBLIC_SITE_URL` | **Yes** | `https://your-app.vercel.app` |
-   | `FRONTEND_URL` | **Yes** | `https://your-app.vercel.app` |
-   | `OPENAI_API_KEY` | No | optional |
+   Example `DATABASE_URL` formats:
+   ```text
+   # Render Postgres (Internal — use this when API is on Render)
+   postgresql://afmd_user:xxxxx@dpg-xxxxx-a/afmd
 
-5. Deploy. First build runs `prisma db push`, seeds admin + courses, and builds Next.js.
+   # Neon
+   postgresql://user:pass@ep-xxxxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+   ```
+
+5. Click **Save Changes**, then **Manual Deploy** → Deploy latest commit.
 6. Copy your Render service URL, e.g. `https://af-md-api.onrender.com`.
 7. Verify: `GET https://af-md-api.onrender.com/api/health` → `{ "status": "ok" }`.
 

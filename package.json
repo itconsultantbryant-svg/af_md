@@ -9,7 +9,7 @@
     "postinstall": "prisma generate",
     "build:render": "prisma generate && next build",
     "build:vercel": "prisma generate && next build",
-    "start:render": "prisma db push && npm run db:seed && next start -H 0.0.0.0 -p ${PORT:-10000}",
+    "start:render": "bash scripts/render-start.sh",
     "lint": "next lint",
     "clean": "rm -rf .next",
     "dev:clean": "npm run clean && next dev",
