@@ -1,9 +1,17 @@
+import { professionalCatalog } from "./professional-catalog";
+
 export type CourseAudience =
   | "students"
   | "professionals"
   | "companies"
   | "ngos"
   | "public";
+
+export type CourseCategory =
+  | "ict-cs"
+  | "artificial-intelligence"
+  | "software-development"
+  | "specialized";
 
 export interface Course {
   id: string;
@@ -16,6 +24,8 @@ export interface Course {
   topics: string[];
   audiences: CourseAudience[];
   image?: string;
+  category?: CourseCategory;
+  certificate?: string;
 }
 
 export const audienceLabels: Record<CourseAudience, string> = {
@@ -26,9 +36,11 @@ export const audienceLabels: Record<CourseAudience, string> = {
   public: "General Public",
 };
 
-export const courses: Course[] = [
+/** Legacy/specialized AfriMind programs */
+const specializedCourses: Course[] = [
   {
     id: "ai-essentials",
+    category: "specialized",
     title: "AI Essentials for Business",
     description:
       "A foundational course for professionals who want to understand AI capabilities and applications in business contexts.",
@@ -460,6 +472,11 @@ export const courses: Course[] = [
     ],
   },
 ];
+
+/** Full catalog: 30 professional courses + specialized programs */
+export const courses: Course[] = [...professionalCatalog, ...specializedCourses];
+
+export { professionalCatalog, courseCatalogMeta } from "./professional-catalog";
 
 export const upcomingSessions = [
   {

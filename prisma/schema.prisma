@@ -250,3 +250,46 @@ model SiteFeedback {
   status    String   @default("NEW")
   createdAt DateTime @default(now())
 }
+
+model SiteVisitor {
+  id           String   @id @default(cuid())
+  visitorKey   String   @unique
+  isReturning  Boolean  @default(false)
+  visitCount   Int      @default(1)
+  totalSeconds Int      @default(0)
+  userAgent    String?
+  referrer     String?
+  firstSeenAt  DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+
+  sessions SiteSession[]
+  events   VisitorEvent[]
+}
+
+model SiteSession {
+  id          String    @id @default(cuid())
+  visitorId   String
+  entryPath   String
+  exitPath    String?
+  durationSec Int       @default(0)
+  pageViews   Int       @default(0)
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+
+  visitor SiteVisitor    @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  events  VisitorEvent[]
+}
+
+model VisitorEvent {
+  id        String   @id @default(cuid())
+  visitorId String
+  sessionId String?
+  type      String
+  path      String?
+  label     String?
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  visitor SiteVisitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  session SiteSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+}

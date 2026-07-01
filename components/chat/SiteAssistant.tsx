@@ -4,20 +4,23 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import { COMPANY_SHORT } from "@/lib/brand";
+import { trackSiteEvent } from "@/components/analytics/SiteTracker";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
+const GREETING_KEY = "afrimind_chat_greeted";
+const GREETING_DELAY_MS = 10000;
+
+const welcomeMessage = `Hi! I'm the ${COMPANY_SHORT} assistant. Ask me about our services, training courses (prices & duration), portfolio systems, demos, or share feedback for our team.`;
+
 export function SiteAssistant() {
   const [open, setOpen] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content:
-        `Hi! I'm the ${COMPANY_SHORT} assistant. Ask me about our services, training courses (prices & duration), portfolio systems, demos, or share feedback for our team.`,
-    },
+    { role: "assistant", content: welcomeMessage },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,10 +28,41 @@ export function SiteAssistant() {
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackEmail, setFeedbackEmail] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const greetingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
+
+  useEffect(() => {
+    const alreadyGreeted = localStorage.getItem(GREETING_KEY);
+    if (alreadyGreeted || open) return;
+
+    greetingTimer.current = setTimeout(() => {
+      if (!localStorage.getItem(GREETING_KEY) && !open) {
+        setShowGreeting(true);
+        trackSiteEvent("chat_greet_shown", "Proactive greeting displayed");
+      }
+    }, GREETING_DELAY_MS);
+
+    return () => {
+      if (greetingTimer.current) clearTimeout(greetingTimer.current);
+    };
+  }, [open]);
+
+  const dismissGreeting = () => {
+    setShowGreeting(false);
+    localStorage.setItem(GREETING_KEY, "1");
+  };
+
+  const openChat = () => {
+    const wasOpen = open;
+    setOpen(!open);
+    if (!wasOpen) {
+      dismissGreeting();
+      trackSiteEvent("chat_open", "User opened chat assistant");
+    }
+  };
 
   const send = async (text?: string) => {
     const msg = (text || input).trim();
@@ -36,6 +70,7 @@ export function SiteAssistant() {
     setInput("");
     setMessages((m) => [...m, { role: "user", content: msg }]);
     setLoading(true);
+    trackSiteEvent("chat_message", "User sent chat message", { preview: msg.slice(0, 80) });
 
     try {
       const res = await fetch("/api/chat", {
@@ -55,7 +90,10 @@ export function SiteAssistant() {
     } catch {
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "Connection error. Please try again or contact hello@afrimindai.com." },
+        {
+          role: "assistant",
+          content: "Connection error. Please try again or contact hello@afrimindai.com.",
+        },
       ]);
     } finally {
       setLoading(false);
@@ -65,6 +103,7 @@ export function SiteAssistant() {
   const submitFeedback = async () => {
     if (!input.trim()) return;
     setLoading(true);
+    trackSiteEvent("chat_feedback", "User submitted feedback via chat");
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -100,6 +139,48 @@ export function SiteAssistant() {
   return (
     <>
       <AnimatePresence>
+        {showGreeting && !open && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            className="fixed bottom-24 right-4 md:right-6 z-50 max-w-xs"
+          >
+            <div className="relative bg-brand-darker border border-brand-gold/30 rounded-2xl p-4 shadow-xl shadow-black/40">
+              <button
+                onClick={dismissGreeting}
+                className="absolute top-2 right-2 text-brand-muted hover:text-white p-1"
+                aria-label="Dismiss"
+              >
+                <X size={14} />
+              </button>
+              <div className="flex items-start gap-3 pr-4">
+                <div className="w-9 h-9 rounded-full bg-brand-gold/20 flex items-center justify-center shrink-0">
+                  <Sparkles size={16} className="text-brand-gold" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white mb-1">
+                    Need help exploring AfriMind?
+                  </p>
+                  <p className="text-xs text-brand-muted leading-relaxed mb-3">
+                    I can guide you through our courses, services, portfolio demos, and more. Tap
+                    to start a conversation!
+                  </p>
+                  <button
+                    onClick={openChat}
+                    className="text-xs font-medium px-3 py-1.5 bg-brand-gold text-brand-dark rounded-lg hover:bg-brand-gold-light transition-colors"
+                  >
+                    Chat with us →
+                  </button>
+                </div>
+              </div>
+              <div className="absolute -bottom-2 right-8 w-4 h-4 bg-brand-darker border-r border-b border-brand-gold/30 rotate-45" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -116,7 +197,7 @@ export function SiteAssistant() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">{COMPANY_SHORT} Assistant</p>
-                  <p className="text-[10px] text-green-400">Online · Site guide</p>
+                  <p className="text-[10px] text-green-400">Online · Here to help</p>
                 </div>
               </div>
               <button onClick={() => setOpen(false)} className="text-brand-muted hover:text-white p-1">
@@ -131,7 +212,7 @@ export function SiteAssistant() {
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                       m.role === "user"
                         ? "bg-brand-gold text-brand-dark rounded-br-md"
                         : "bg-white/5 text-brand-muted border border-white/5 rounded-bl-md"
@@ -206,13 +287,16 @@ export function SiteAssistant() {
       </AnimatePresence>
 
       <motion.button
-        onClick={() => setOpen(!open)}
+        onClick={openChat}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="fixed bottom-6 right-4 md:right-6 z-50 w-14 h-14 rounded-full bg-brand-gold text-brand-dark shadow-lg shadow-brand-gold/30 flex items-center justify-center hover:shadow-brand-gold/50 transition-shadow"
         aria-label="Open chat assistant"
       >
         {open ? <X size={24} /> : <MessageCircle size={24} />}
+        {!open && showGreeting && (
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-brand-dark animate-pulse" />
+        )}
       </motion.button>
     </>
   );

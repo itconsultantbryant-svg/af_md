@@ -9,6 +9,7 @@ import {
   Building2,
   FileText,
   Mail,
+  BarChart3,
 } from "lucide-react";
 
 interface Stats {
@@ -19,6 +20,8 @@ interface Stats {
   totalClients: number;
   activeContracts: number;
   subscriptions: number;
+  totalVisitors: number;
+  visitorsToday: number;
 }
 
 export default function AdminDashboard() {
@@ -38,6 +41,8 @@ export default function AdminDashboard() {
     { label: "Clients", value: stats?.totalClients, icon: Building2, href: "/admin/clients", color: "text-emerald-400" },
     { label: "Active Contracts", value: stats?.activeContracts, icon: FileText, href: "/admin/contracts", color: "text-purple-400" },
     { label: "Newsletter Subscribers", value: stats?.subscriptions, icon: Mail, href: "/admin/subscriptions", color: "text-pink-400" },
+    { label: "Site Visitors", value: stats?.totalVisitors, icon: BarChart3, href: "/admin/analytics", color: "text-cyan-400" },
+    { label: "Visitors Today", value: stats?.visitorsToday, icon: BarChart3, href: "/admin/analytics", color: "text-teal-400" },
   ];
 
   return (
@@ -81,6 +86,9 @@ export default function AdminDashboard() {
           </Link>
           <Link href="/admin/export" className="px-4 py-2 border border-white/20 text-white rounded-lg text-sm">
             Export Data
+          </Link>
+          <Link href="/admin/analytics" className="px-4 py-2 border border-white/20 text-white rounded-lg text-sm">
+            View Analytics
           </Link>
         </div>
       </div>

@@ -6,6 +6,8 @@ export async function GET() {
   try {
     await requireAdmin();
 
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
     const [
       totalCourses,
       totalStudents,
@@ -14,6 +16,8 @@ export async function GET() {
       totalClients,
       activeContracts,
       subscriptions,
+      totalVisitors,
+      visitorsToday,
     ] = await Promise.all([
       prisma.course.count({ where: { published: true } }),
       prisma.user.count({ where: { role: "LEARNER" } }),
@@ -22,6 +26,8 @@ export async function GET() {
       prisma.client.count(),
       prisma.contract.count({ where: { status: "ACTIVE" } }),
       prisma.newsletterSubscription.count({ where: { active: true } }),
+      prisma.siteVisitor.count(),
+      prisma.siteVisitor.count({ where: { lastSeenAt: { gte: dayAgo } } }),
     ]);
 
     return json({
@@ -33,6 +39,8 @@ export async function GET() {
         totalClients,
         activeContracts,
         subscriptions,
+        totalVisitors,
+        visitorsToday,
       },
     });
   } catch {

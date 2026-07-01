@@ -98,7 +98,7 @@ function buildChunks(): KnowledgeChunk[] {
     id: "training-general",
     topic: "Training Programs",
     keywords: ["training", "courses", "learn", "workshop", "bootcamp", "certification", "all courses"],
-    content: `We offer ${courses.length} AI training courses from beginner to advanced, online and in-person. Prices range from $125 to $500+. Browse all courses at /training. Categories include AI essentials, chatbots, NLP, data analytics, healthcare AI, and corporate programs.`,
+    content: `We offer ${courses.length} training courses across ICT & Computer Science (10 courses, $100–$200, 15 weeks), Artificial Intelligence (10 courses, $80–$150, 12 weeks), Software Development (10 courses, $150–$250, 15 weeks), plus specialized AfriMind programs. All professional tracks include certificates. Browse at /training. Contact: info@afrimindtech.com.`,
   });
 
   chunks.push({

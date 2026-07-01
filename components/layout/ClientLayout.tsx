@@ -6,6 +6,7 @@ import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
 import { SiteAssistant } from "@/components/chat/SiteAssistant";
+import { SiteTracker } from "@/components/analytics/SiteTracker";
 import { AuthProvider } from "@/lib/hooks/useAuth";
 
 const SHELL_HIDDEN_PREFIXES = ["/admin", "/dashboard", "/login", "/register", "/verify"];
@@ -21,6 +22,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       {!hideShell && <Navbar />}
       {children}
       {!hideShell && <Footer />}
+      {!hideShell && <SiteTracker />}
       {!hideShell && <SiteAssistant />}
     </AuthProvider>
   );

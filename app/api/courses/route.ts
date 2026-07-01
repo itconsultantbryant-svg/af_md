@@ -3,18 +3,39 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { courseSchema } from "@/lib/validations";
 import { parseCourseJson, slugify } from "@/lib/courses";
+import { catalogForDisplay } from "@/lib/catalog";
+import { syncCatalogCourses } from "@/lib/sync-courses";
 import { json, error } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const all = searchParams.get("all") === "true";
 
-  const courses = await prisma.course.findMany({
-    where: all ? {} : { published: true },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const where = all ? {} : { published: true };
+    let count = await prisma.course.count({ where });
 
-  return json({ courses: courses.map(parseCourseJson) });
+    if (count === 0) {
+      await syncCatalogCourses();
+      count = await prisma.course.count({ where });
+    }
+
+    const courses = await prisma.course.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (courses.length === 0) {
+      return json({ courses: catalogForDisplay(), source: "catalog" });
+    }
+
+    return json({ courses: courses.map(parseCourseJson), source: "database" });
+  } catch (e) {
+    console.error("GET /api/courses failed:", e);
+    return json({ courses: catalogForDisplay(), source: "catalog" });
+  }
 }
 
 export async function POST(req: NextRequest) {

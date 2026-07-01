@@ -1,14 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { courses } from "../lib/data/training";
-import { durationToHours } from "../lib/learning";
+import { syncCatalogCourses } from "../lib/sync-courses";
 
 const prisma = new PrismaClient();
-
-function parsePrice(price: string): number {
-  const n = parseFloat(price.replace(/[^0-9.]/g, ""));
-  return isNaN(n) ? 0 : n;
-}
 
 const sampleQuestions = [
   {
@@ -179,44 +174,9 @@ async function main() {
 
   let firstCourseId: string | null = null;
 
-  for (const course of courses) {
-    const seats = course.id === "youth-ai-camp" ? 20 : course.format === "Corporate" ? 15 : 25;
-    const completionHours = durationToHours(course.duration);
-    const dbCourse = await prisma.course.upsert({
-      where: { slug: course.id },
-      update: {
-        title: course.title,
-        description: course.description,
-        duration: course.duration,
-        completionHours,
-        level: course.level,
-        format: course.format,
-        price: course.price,
-        priceAmount: parsePrice(course.price),
-        topics: JSON.stringify(course.topics),
-        audiences: JSON.stringify(course.audiences),
-        published: true,
-      },
-      create: {
-        slug: course.id,
-        title: course.title,
-        description: course.description,
-        duration: course.duration,
-        completionHours,
-        level: course.level,
-        format: course.format,
-        price: course.price,
-        priceAmount: parsePrice(course.price),
-        topics: JSON.stringify(course.topics),
-        audiences: JSON.stringify(course.audiences),
-        seatsTotal: seats,
-        seatsAvailable: seats,
-        published: true,
-      },
-    });
-
-    if (!firstCourseId) firstCourseId = dbCourse.id;
-  }
+  await syncCatalogCourses();
+  const first = await prisma.course.findFirst({ orderBy: { createdAt: "asc" } });
+  firstCourseId = first?.id ?? null;
 
   if (firstCourseId) {
     await seedCourseContent(firstCourseId);

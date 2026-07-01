@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getSession, requireAdmin } from "@/lib/auth";
 import { enrollmentSchema } from "@/lib/validations";
 import { sendEnrollmentConfirmation } from "@/lib/notifications";
+import { resolveCourseByIdOrSlug } from "@/lib/sync-courses";
 import { json, error } from "@/lib/api";
 
 export async function GET(req: NextRequest) {
@@ -60,15 +61,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = enrollmentSchema.parse(body);
 
-    const course = await prisma.course.findUnique({
-      where: { id: data.courseId },
-    });
+    const course = await resolveCourseByIdOrSlug(data.courseId);
     if (!course || !course.published) return error("Course not found", 404);
     if (course.seatsAvailable <= 0) return error("No seats available", 400);
 
     const existing = await prisma.enrollment.findUnique({
       where: {
-        userId_courseId: { userId: session.id, courseId: data.courseId },
+        userId_courseId: { userId: session.id, courseId: course.id },
       },
     });
     if (existing) return error("Already enrolled in this course", 409);
@@ -76,7 +75,7 @@ export async function POST(req: NextRequest) {
     const enrollment = await prisma.enrollment.create({
       data: {
         userId: session.id,
-        courseId: data.courseId,
+        courseId: course.id,
         organization: data.organization,
         jobTitle: data.jobTitle,
         experience: data.experience,

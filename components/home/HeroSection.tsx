@@ -21,7 +21,7 @@ const stats = [
   { value: 15, suffix: "+", label: "Industries Served" },
   { value: 6, suffix: "", label: "Countries Active" },
   { value: 30, suffix: "+", label: "AI Models Deployed" },
-  { value: 24, suffix: "", label: "Training Courses" },
+  { value: 54, suffix: "", label: "Training Courses" },
 ];
 
 export function HeroSection() {
