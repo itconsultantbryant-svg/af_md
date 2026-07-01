@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
-import { COMPANY_SHORT } from "@/lib/brand";
+import { COMPANY_SHORT, COMPANY_EMAIL } from "@/lib/brand";
 import { trackSiteEvent } from "@/components/analytics/SiteTracker";
 
 interface Message {
@@ -92,7 +92,7 @@ export function SiteAssistant() {
         ...m,
         {
           role: "assistant",
-          content: "Connection error. Please try again or contact hello@afrimindai.com.",
+          content: `Connection error. Please try again or contact ${COMPANY_EMAIL}.`,
         },
       ]);
     } finally {

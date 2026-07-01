@@ -4,6 +4,8 @@ import {
   COMPANY_EMAIL,
   COMPANY_LOCATION,
   COMPANY_URL,
+  COMPANY_PHONE_DISPLAY,
+  COMPANY_WHATSAPP,
 } from "@/lib/brand";
 import { serviceDetails, processSteps, pricingTiers } from "@/lib/data/services";
 import { projects } from "@/lib/data/portfolio";
@@ -28,8 +30,8 @@ function buildChunks(): KnowledgeChunk[] {
     {
       id: "contact",
       topic: "Contact",
-      keywords: ["contact", "email", "phone", "reach", "consultation", "hello", "support"],
-      content: `Contact ${COMPANY_NAME}: Email ${COMPANY_EMAIL}, Location: ${COMPANY_LOCATION}. Free initial consultation available at /contact. You can enroll in training courses, request software demos from our portfolio, or submit project inquiries.`,
+      keywords: ["contact", "email", "phone", "whatsapp", "reach", "consultation", "hello", "support"],
+      content: `Contact ${COMPANY_NAME}: Email ${COMPANY_EMAIL}, WhatsApp ${COMPANY_PHONE_DISPLAY} (wa.me/${COMPANY_WHATSAPP}), Location: ${COMPANY_LOCATION}. Free initial consultation at /contact.`,
     },
     {
       id: "process",
@@ -98,7 +100,7 @@ function buildChunks(): KnowledgeChunk[] {
     id: "training-general",
     topic: "Training Programs",
     keywords: ["training", "courses", "learn", "workshop", "bootcamp", "certification", "all courses"],
-    content: `We offer ${courses.length} training courses across ICT & Computer Science (10 courses, $100–$200, 15 weeks), Artificial Intelligence (10 courses, $80–$150, 12 weeks), Software Development (10 courses, $150–$250, 15 weeks), plus specialized AfriMind programs. All professional tracks include certificates. Browse at /training. Contact: info@afrimindtech.com.`,
+    content: `We offer ${courses.length} training courses across ICT & Computer Science (10 courses, $100–$200, 15 weeks), Artificial Intelligence (10 courses, $80–$150, 12 weeks), Software Development (10 courses, $150–$250, 15 weeks), plus specialized AfriMind programs. All professional tracks include certificates. Browse at /training.`,
   });
 
   chunks.push({

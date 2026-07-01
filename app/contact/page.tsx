@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, MapPin, Check } from "lucide-react";
+import { Mail, MapPin, Check, Phone } from "lucide-react";
 import {
   LinkedInIcon,
   TwitterIcon,
@@ -13,6 +13,12 @@ import {
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import {
+  COMPANY_EMAIL,
+  COMPANY_LOCATION,
+  COMPANY_PHONE_DISPLAY,
+  COMPANY_WHATSAPP,
+} from "@/lib/brand";
 
 interface FormData {
   name: string;
@@ -98,7 +104,7 @@ export default function ContactPage() {
     );
 
   const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "231XXXXXXXXX";
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || COMPANY_WHATSAPP;
 
   return (
     <main className="pt-24 pb-24 px-4 sm:px-6 lg:px-8">
@@ -113,19 +119,24 @@ export default function ContactPage() {
 
             <div className="space-y-6 mb-8">
               <a
-                href="mailto:hello@afrimindai.com"
+                href={`mailto:${COMPANY_EMAIL}`}
                 className="flex items-center gap-3 text-brand-muted hover:text-brand-gold transition-colors cursor-hover"
               >
                 <Mail className="w-5 h-5 text-brand-gold" />
-                hello@afrimindai.com
+                {COMPANY_EMAIL}
+              </a>
+              <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-brand-muted hover:text-brand-gold transition-colors cursor-hover"
+              >
+                <Phone className="w-5 h-5 text-brand-gold" />
+                {COMPANY_PHONE_DISPLAY}
               </a>
               <div className="flex items-start gap-3 text-brand-muted">
                 <MapPin className="w-5 h-5 text-brand-gold mt-0.5" />
-                <span>
-                  Monrovia, Montserrado County
-                  <br />
-                  Liberia
-                </span>
+                <span>{COMPANY_LOCATION}</span>
               </div>
             </div>
 

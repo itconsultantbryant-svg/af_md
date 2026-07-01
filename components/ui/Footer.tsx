@@ -17,6 +17,8 @@ import {
   COMPANY_TAGLINE,
   COMPANY_LOCATION,
   COMPANY_EMAIL,
+  COMPANY_PHONE_DISPLAY,
+  COMPANY_WHATSAPP,
 } from "@/lib/brand";
 import { serviceDetails } from "@/lib/data/services";
 
@@ -176,7 +178,14 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={14} className="text-brand-gold shrink-0" />
-                <span>+231 77 559 2486</span>
+                <a
+                  href={`https://wa.me/${COMPANY_WHATSAPP}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-brand-gold transition-colors"
+                >
+                  {COMPANY_PHONE_DISPLAY}
+                </a>
               </li>
             </ul>
             <form onSubmit={handleSubscribe} className="space-y-2">
