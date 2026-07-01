@@ -136,14 +136,45 @@ Render API → PostgreSQL
 
 | Issue | Fix |
 |-------|-----|
+| **Login / register returns 500** | Database is not connected. See [Fix login & API errors](#fix-login--api-errors) below. |
+| **401 on `/api/auth/me`** | Normal when not logged in. Fix login first if sign-in fails. |
+| **Analytics 500 in console** | Harmless when DB is down; latest code skips tracking silently. Redeploy after pulling fixes. |
 | 401 on admin/dashboard | Ensure `JWT_SECRET` matches on Vercel and Render |
-| API 502 / timeout | Render free tier sleeps after 15 min — first request wakes it |
+| API 502 / timeout | Render free tier sleeps after 15 min — first request wakes it (~60s). If Render is deleted, use Vercel-only mode below. |
 | Uploads missing after redeploy | Free tier has no persistent disk — upgrade to paid and mount a disk, or use cloud storage |
 | CORS errors | Set `FRONTEND_URL` on Render to your exact Vercel URL |
-| Build fails on Vercel | Ensure `BACKEND_URL` is set; `prisma generate` runs via `postinstall` |
+| Build fails on Vercel | Ensure env vars are set; `prisma generate` runs via `postinstall` |
 | Blueprint: one free database limit | Reuse existing Render Postgres URL or use [Neon](https://neon.tech) for `DATABASE_URL` |
 | Build failed: DATABASE_URL not found | Add `DATABASE_URL` in Render **Environment**, then **Manual Deploy** → Clear build cache & deploy |
 | Build failed: Cannot find module tailwindcss | Redeploy latest commit; build uses `npm ci --include=dev` and Tailwind is in dependencies |
+
+### Fix login & API errors
+
+Your live site (`af-md.vercel.app`) currently runs API routes **without a working database**. That causes login, registration, and analytics to fail.
+
+**Recommended — Vercel-only (simplest):**
+
+1. Create a free PostgreSQL database at [neon.tech](https://neon.tech).
+2. In **Vercel → af-md → Settings → Environment Variables**, add:
+   - `DATABASE_URL` = Neon connection string (with `?sslmode=require`)
+   - `JWT_SECRET` = same long random string everywhere
+   - `ADMIN_EMAIL` = `admin@afrimindai.com`
+   - `ADMIN_PASSWORD` = your admin password
+   - `NEXT_PUBLIC_SITE_URL` = `https://af-md.vercel.app`
+3. **Remove** `BACKEND_URL` if set (unless Render is healthy).
+4. Redeploy Vercel (Deployments → Redeploy).
+5. After deploy, open `https://af-md.vercel.app/api/health` — should show `"db": true`.
+6. Log in at `/login` with your admin credentials.
+
+**Alternative — Render backend:**
+
+1. Ensure Render service **af-md-api** exists and is not suspended.
+2. Set `DATABASE_URL`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` on Render.
+3. On Vercel, set `BACKEND_URL=https://af-md-api.onrender.com` and matching `JWT_SECRET`.
+4. Redeploy **both** Vercel and Render.
+5. Verify `https://af-md-api.onrender.com/api/health` returns `"db": true`.
+
+> **Note:** `next.config` rewrites only apply at build time. This project also proxies `/api/*` at **runtime** in `middleware.ts`, so `BACKEND_URL` works without rebuilding after you add it.
 
 ---
 

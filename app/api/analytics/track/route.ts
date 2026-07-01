@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { trackVisit } from "@/lib/analytics";
-import { json, error } from "@/lib/api";
+import { json } from "@/lib/api";
+import { checkDbConnection, isDbConnectionError } from "@/lib/db-health";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,11 @@ export async function POST(req: NextRequest) {
     const { visitorKey, sessionId, type, path, label, metadata, durationSec } = body;
 
     if (!visitorKey || !type) {
-      return error("visitorKey and type required");
+      return json({ ok: false, skipped: true });
+    }
+
+    if (!(await checkDbConnection())) {
+      return json({ ok: false, skipped: true });
     }
 
     const userAgent = req.headers.get("user-agent") || undefined;
@@ -28,9 +33,11 @@ export async function POST(req: NextRequest) {
       referrer,
     });
 
-    return json(result);
+    return json({ ok: true, ...result });
   } catch (e) {
-    console.error("Analytics track error:", e);
-    return error("Tracking failed", 500);
+    if (!isDbConnectionError(e)) {
+      console.error("Analytics track error:", e);
+    }
+    return json({ ok: false, skipped: true });
   }
 }

@@ -8,9 +8,18 @@ import {
 } from "@/lib/auth";
 import { loginSchema } from "@/lib/validations";
 import { json, error } from "@/lib/api";
+import { checkDbConnection, dbConfigHint, isDbConnectionError } from "@/lib/db-health";
+import { ZodError } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkDbConnection())) {
+      return error(
+        `Sign-in is unavailable: database not connected. ${dbConfigHint()}`,
+        503
+      );
+    }
+
     const body = await req.json();
     const data = loginSchema.parse(body);
 
@@ -31,7 +40,12 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
     return res;
-  } catch {
+  } catch (e) {
+    if (e instanceof ZodError) return error("Invalid email or password", 400);
+    if (isDbConnectionError(e)) {
+      return error(`Sign-in is unavailable: database error. ${dbConfigHint()}`, 503);
+    }
+    console.error("Login error:", e);
     return error("Login failed", 500);
   }
 }

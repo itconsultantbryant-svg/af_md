@@ -10,9 +10,18 @@ import {
 import { registerSchema } from "@/lib/validations";
 import { sendVerificationEmail, sendVerificationSms } from "@/lib/notifications";
 import { json, error } from "@/lib/api";
+import { checkDbConnection, dbConfigHint, isDbConnectionError } from "@/lib/db-health";
+import { ZodError } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkDbConnection())) {
+      return error(
+        `Registration is unavailable: database not connected. ${dbConfigHint()}`,
+        503
+      );
+    }
+
     const body = await req.json();
     const data = registerSchema.parse(body);
 
@@ -62,8 +71,9 @@ export async function POST(req: NextRequest) {
     });
     return res;
   } catch (e) {
-    if (e instanceof Error && e.name === "ZodError") {
-      return error("Invalid registration data");
+    if (e instanceof ZodError) return error("Invalid registration data");
+    if (isDbConnectionError(e)) {
+      return error(`Registration is unavailable: database error. ${dbConfigHint()}`, 503);
     }
     console.error(e);
     return error("Registration failed", 500);

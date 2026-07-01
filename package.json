@@ -8,7 +8,7 @@
     "start": "next start",
     "postinstall": "prisma generate",
     "build:render": "prisma generate && next build",
-    "build:vercel": "prisma generate && next build",
+    "build:vercel": "prisma generate && node scripts/vercel-db-setup.mjs && next build",
     "start:render": "bash scripts/render-start.sh",
     "lint": "next lint",
     "clean": "rm -rf .next",
