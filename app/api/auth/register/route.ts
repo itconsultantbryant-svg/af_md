@@ -3,12 +3,10 @@ import { prisma } from "@/lib/db";
 import {
   hashPassword,
   createToken,
-  generateOtp,
   COOKIE_NAME,
   toSessionUser,
 } from "@/lib/auth";
 import { registerSchema } from "@/lib/validations";
-import { sendVerificationEmail, sendVerificationSms } from "@/lib/notifications";
 import { json, error } from "@/lib/api";
 import { checkDbConnection, dbConfigHint, isDbConnectionError } from "@/lib/db-health";
 import { ZodError } from "zod";
@@ -30,9 +28,6 @@ export async function POST(req: NextRequest) {
     });
     if (existing) return error("Email already registered", 409);
 
-    const otp = generateOtp();
-    const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
     const user = await prisma.user.create({
       data: {
         email: data.email,
@@ -41,26 +36,17 @@ export async function POST(req: NextRequest) {
         lastName: data.lastName,
         phone: data.phone,
         role: "LEARNER",
-        emailVerifyToken: otp,
-        smsVerifyToken: data.phone ? generateOtp() : null,
-        verifyTokenExpiry: expiry,
+        emailVerified: true,
+        phoneVerified: true,
       },
     });
-
-    await sendVerificationEmail(user.email, otp);
-    if (user.phone && user.smsVerifyToken) {
-      await sendVerificationSms(user.phone, user.smsVerifyToken);
-    }
 
     const session = toSessionUser(user);
     const token = await createToken(session);
 
     const res = json({
       user: session,
-      message: "Account created. Please verify your email or phone.",
-      devEmailCode: process.env.NODE_ENV === "development" ? otp : undefined,
-      devSmsCode:
-        process.env.NODE_ENV === "development" ? user.smsVerifyToken : undefined,
+      message: "Account created successfully.",
     });
     res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,

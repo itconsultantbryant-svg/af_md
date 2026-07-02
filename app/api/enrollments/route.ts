@@ -54,10 +54,6 @@ export async function POST(req: NextRequest) {
     const session = await getSession();
     if (!session) return error("Please log in to enroll", 401);
 
-    if (!session.emailVerified && !session.phoneVerified) {
-      return error("Please verify your account before enrolling", 403);
-    }
-
     const body = await req.json();
     const data = enrollmentSchema.parse(body);
 

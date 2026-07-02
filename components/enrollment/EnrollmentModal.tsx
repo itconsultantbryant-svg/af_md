@@ -50,8 +50,6 @@ export function EnrollmentModal({
     paymentProof: "",
   });
 
-  const verified = user?.emailVerified || user?.phoneVerified;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!course) return;
@@ -112,15 +110,6 @@ export function EnrollmentModal({
                   Log In
                 </Button>
               </div>
-            </div>
-          ) : !verified ? (
-            <div className="text-center py-8">
-              <p className="text-brand-muted mb-4">
-                Please verify your email or phone before enrolling.
-              </p>
-              <Button variant="primary" href="/verify">
-                Verify Account
-              </Button>
             </div>
           ) : success ? (
             <div className="text-center py-8">

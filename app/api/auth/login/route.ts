@@ -28,6 +28,15 @@ export async function POST(req: NextRequest) {
       return error("Invalid email or password", 401);
     }
 
+    if (!user.emailVerified || !user.phoneVerified) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: true, phoneVerified: true },
+      });
+      user.emailVerified = true;
+      user.phoneVerified = true;
+    }
+
     const session = toSessionUser(user);
     const token = await createToken(session);
 

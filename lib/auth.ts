@@ -40,11 +40,7 @@ export async function requireAdmin(): Promise<SessionUser> {
 }
 
 export async function requireVerifiedLearner(): Promise<SessionUser> {
-  const session = await requireSession();
-  if (!session.emailVerified && !session.phoneVerified) {
-    throw new Error("Verification required");
-  }
-  return session;
+  return requireSession();
 }
 
 export function generateOtp(): string {

@@ -7,7 +7,6 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  AlertCircle,
   ChevronRight,
   BookOpen,
   Award,
@@ -76,17 +75,6 @@ export default function LearnerDashboard() {
     }
     return <span className="flex items-center gap-1 text-amber-400 text-xs"><Clock size={14} /> Pending Approval</span>;
   };
-
-  if (!user?.emailVerified && !user?.phoneVerified) {
-    return (
-      <div className="text-center py-16">
-        <AlertCircle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
-        <h2 className="font-display text-xl font-bold text-white mb-2">Verify Your Account</h2>
-        <p className="text-brand-muted mb-6">Please verify your email or phone to access courses.</p>
-        <Button variant="primary" href="/verify">Verify Now</Button>
-      </div>
-    );
-  }
 
   return (
     <div>

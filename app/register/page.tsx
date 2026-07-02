@@ -36,7 +36,7 @@ function RegisterForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Registration failed");
       await refresh();
-      router.push(`/verify?redirect=${params.get("redirect") || "/training"}`);
+      router.push(params.get("redirect") || "/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
@@ -63,7 +63,7 @@ function RegisterForm() {
             <input required className={ic} placeholder="Last Name" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
           </div>
           <input type="email" required className={ic} placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-          <input className={ic} placeholder="Phone / WhatsApp (for SMS verify)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+          <input className={ic} placeholder="Phone / WhatsApp (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           <input type="password" required minLength={8} className={ic} placeholder="Password (min 8 chars)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
           <Button type="submit" variant="primary" className="w-full" disabled={loading}>
             {loading ? "Creating..." : "Create Account"}
