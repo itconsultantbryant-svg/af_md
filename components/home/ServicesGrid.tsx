@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { scaleIn, staggerContainer } from "@/lib/animations";
 
 const services = [
@@ -82,6 +83,12 @@ export function ServicesGrid() {
             </motion.div>
           ))}
         </motion.div>
+
+        <div className="mt-12 text-center">
+          <Button variant="gold" href="/services#packages">
+            See Our Fixed-Price AI Packages →
+          </Button>
+        </div>
       </div>
     </section>
   );

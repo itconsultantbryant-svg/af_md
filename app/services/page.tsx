@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { ServiceSection } from "@/components/services/ServiceSection";
+import { ProductizedPackages } from "@/components/services/ProductizedPackages";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import {
   serviceDetails,
@@ -35,6 +36,8 @@ export default function ServicesPage() {
           </p>
         </motion.div>
       </section>
+
+      <ProductizedPackages />
 
       {serviceDetails.map((service, i) => (
         <ServiceSection key={service.title} {...service} index={i} />
