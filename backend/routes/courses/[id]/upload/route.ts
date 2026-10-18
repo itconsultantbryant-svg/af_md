@@ -1,12 +1,11 @@
 import { NextRequest } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { json, error } from "@/lib/api";
 import { processMaterialContent } from "@/lib/sync-course-exams";
 import { isVideoMime, mimeFromFilename } from "@/lib/media-url";
-import { getUploadsRoot } from "@/lib/paths";
+import { putUpload } from "@/lib/storage";
 
 function inferType(filename: string, mime: string): string {
   if (isVideoMime(mime, filename)) return "VIDEO";
@@ -49,10 +48,8 @@ export async function POST(
     const buffer = Buffer.from(bytes);
     const ext = path.extname(filename) || (type === "VIDEO" ? ".mp4" : ".bin");
     const storedName = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-    const uploadDir = path.join(getUploadsRoot(), "courses", params.id);
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, storedName), buffer);
     const fileUrl = `/uploads/courses/${params.id}/${storedName}`;
+    await putUpload(fileUrl, buffer, mime);
 
     const count = await prisma.courseMaterial.count({ where: { sectionId } });
     const material = await prisma.courseMaterial.create({

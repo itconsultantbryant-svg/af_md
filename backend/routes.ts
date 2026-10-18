@@ -1,0 +1,70 @@
+// Register every backend route here; static paths precede parameter paths.
+import * as route0 from "./routes/admin/stats/route";
+import * as route1 from "./routes/admin/students/route";
+import * as route2 from "./routes/analytics/admin/route";
+import * as route3 from "./routes/analytics/track/route";
+import * as route4 from "./routes/auth/login/route";
+import * as route5 from "./routes/auth/logout/route";
+import * as route6 from "./routes/auth/me/route";
+import * as route7 from "./routes/auth/register/route";
+import * as route8 from "./routes/auth/resend/route";
+import * as route9 from "./routes/auth/verify/route";
+import * as route10 from "./routes/chat/route";
+import * as route11 from "./routes/clients/route";
+import * as route12 from "./routes/contracts/route";
+import * as route13 from "./routes/courses/route";
+import * as route14 from "./routes/demo-requests/admin/route";
+import * as route15 from "./routes/demo-requests/route";
+import * as route16 from "./routes/enrollments/route";
+import * as route17 from "./routes/export/enrollments/route";
+import * as route18 from "./routes/export/payments/route";
+import * as route19 from "./routes/feedback/admin/route";
+import * as route20 from "./routes/health/route";
+import * as route21 from "./routes/learner/courses/route";
+import * as route22 from "./routes/profile/route";
+import * as route23 from "./routes/subscriptions/route";
+import * as route24 from "./routes/certificates/[id]/route";
+import * as route25 from "./routes/clients/[id]/route";
+import * as route26 from "./routes/contracts/[id]/route";
+import * as route27 from "./routes/courses/[id]/content/route";
+import * as route28 from "./routes/courses/[id]/route";
+import * as route29 from "./routes/courses/[id]/upload/route";
+import * as route30 from "./routes/enrollments/[id]/route";
+import * as route31 from "./routes/learning/[id]/route";
+import * as route32 from "./routes/media/[...path]/route";
+
+export const routes = [
+  { path: "/api/admin/stats", handlers: route0 },
+  { path: "/api/admin/students", handlers: route1 },
+  { path: "/api/analytics/admin", handlers: route2 },
+  { path: "/api/analytics/track", handlers: route3 },
+  { path: "/api/auth/login", handlers: route4 },
+  { path: "/api/auth/logout", handlers: route5 },
+  { path: "/api/auth/me", handlers: route6 },
+  { path: "/api/auth/register", handlers: route7 },
+  { path: "/api/auth/resend", handlers: route8 },
+  { path: "/api/auth/verify", handlers: route9 },
+  { path: "/api/chat", handlers: route10 },
+  { path: "/api/clients", handlers: route11 },
+  { path: "/api/contracts", handlers: route12 },
+  { path: "/api/courses", handlers: route13 },
+  { path: "/api/demo-requests/admin", handlers: route14 },
+  { path: "/api/demo-requests", handlers: route15 },
+  { path: "/api/enrollments", handlers: route16 },
+  { path: "/api/export/enrollments", handlers: route17 },
+  { path: "/api/export/payments", handlers: route18 },
+  { path: "/api/feedback/admin", handlers: route19 },
+  { path: "/api/health", handlers: route20 },
+  { path: "/api/learner/courses", handlers: route21 },
+  { path: "/api/profile", handlers: route22 },
+  { path: "/api/subscriptions", handlers: route23 },
+  { path: "/api/certificates/[id]", handlers: route24 },
+  { path: "/api/clients/[id]", handlers: route25 },
+  { path: "/api/contracts/[id]", handlers: route26 },
+  { path: "/api/courses/[id]/content", handlers: route27 },
+  { path: "/api/courses/[id]", handlers: route28 },
+  { path: "/api/courses/[id]/upload", handlers: route29 },
+  { path: "/api/enrollments/[id]", handlers: route30 },
+  { path: "/api/learning/[id]", handlers: route31 },
+  { path: "/api/media/[...path]", handlers: route32 },
+];

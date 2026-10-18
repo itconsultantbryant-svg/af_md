@@ -1,22 +1,13 @@
-import { readFile } from "fs/promises";
+import { readUpload } from "@/lib/storage";
 import path from "path";
 import mammoth from "mammoth";
 import { estimatePageCount } from "@/lib/material-progress";
 
 async function parsePdf(buffer: Buffer): Promise<{ text: string; numpages: number }> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PDFParse } = require("pdf-parse") as {
-      PDFParse: new (opts: { data: Buffer }) => {
-        getText: () => Promise<{ text: string; total: number }>;
-      };
-    };
-    const parser = new PDFParse({ data: buffer });
-    const result = await parser.getText();
-    return {
-      text: result.text || "",
-      numpages: Math.max(1, result.total || 1),
-    };
+    const { extractText } = await import("unpdf");
+    const result = await extractText(new Uint8Array(buffer), { mergePages: true });
+    return { text: result.text || "", numpages: Math.max(1, result.totalPages || 1) };
   } catch (err) {
     console.error("PDF parse error:", err);
     return { text: "", numpages: 1 };
@@ -43,7 +34,6 @@ export async function extractMaterialContent(
     };
   }
 
-  const absolute = path.join(process.cwd(), "public", filePath.replace(/^\//, ""));
 
   if (type === "VIDEO") {
     return {
@@ -61,9 +51,9 @@ export async function extractMaterialContent(
 
   let buffer: Buffer;
   try {
-    buffer = await readFile(absolute);
+    buffer = await readUpload(filePath);
   } catch (err) {
-    console.error("File read error:", absolute, err);
+    console.error("File read error:", filePath, err);
     return {
       text: combined || title,
       pageCount: estimatePageCount(combined || title),

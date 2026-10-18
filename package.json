@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "postinstall": "prisma generate",
-    "build:render": "prisma generate && next build",
-    "build:vercel": "prisma generate && node scripts/vercel-db-setup.mjs && next build",
-    "start:render": "bash scripts/render-start.sh",
+    "build:vercel": "next build",
     "lint": "next lint",
     "clean": "rm -rf .next",
     "dev:clean": "npm run clean && next dev",
@@ -18,17 +16,22 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:reset-progress": "npx tsx prisma/reset-progress.ts",
     "logo:transparent": "python3 scripts/remove-logo-bg.py",
-    "db:setup": "prisma db push && npx tsx prisma/seed.ts"
+    "db:setup": "prisma db push && npx tsx prisma/seed.ts",
+    "build:neon": "prisma generate && node scripts/build-neon.mjs",
+    "deploy:neon": "node scripts/deploy-neon.mjs",
+    "dev:backend": "node --env-file=.env --env-file=.env.local --import tsx backend/dev.ts",
+    "test:backend": "node --import tsx --test tests/backend.test.ts",
+    "test:neon-bundle": "node scripts/test-neon-bundle.mjs"
   },
   "engines": {
-    "node": ">=18.17.0"
+    "node": "24.x"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0",
-    "@prisma/adapter-neon": "^7.8.0",
+    "@aws-sdk/client-s3": "^3.1150.0",
+    "@neon/config": "^1.8.7",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-accordion": "^1.2.13",
     "@radix-ui/react-dialog": "^1.1.16",
@@ -43,8 +46,6 @@
     "lucide-react": "^1.17.0",
     "mammoth": "^1.12.0",
     "next": "14.2.35",
-    "pdf-parse": "^2.4.5",
-    "pdfjs-dist": "^6.0.227",
     "postcss": "^8",
     "prisma": "^5.22.0",
     "react": "^18",
@@ -56,6 +57,7 @@
     "three": "^0.169.0",
     "tsx": "^4.22.4",
     "typescript": "^5",
+    "unpdf": "^1.8.1",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"
   },
@@ -65,6 +67,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.184.1",
+    "esbuild": "^0.28.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.35"
   }

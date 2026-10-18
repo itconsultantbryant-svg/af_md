@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { cookies } from "next/headers";
+import { requestContext } from "@/backend/request-context";
 import { prisma } from "@/lib/db";
 import {
   createToken,
@@ -21,8 +21,7 @@ export async function verifyPassword(password: string, hash: string) {
 }
 
 export async function getSession(): Promise<SessionUser | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
+  const token = requestContext.getStore()?.cookies.get(COOKIE_NAME)?.value;
   if (!token) return null;
   return verifyToken(token);
 }

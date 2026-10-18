@@ -1,6 +1,6 @@
 import path from "path";
 
-/** Root directory for course uploads (Render persistent disk mounts here). */
+/** Root directory for importing legacy local course uploads. */
 export function getUploadsRoot(): string {
   const custom = process.env.UPLOAD_DIR;
   if (custom) return path.resolve(custom);

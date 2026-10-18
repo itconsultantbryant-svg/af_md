@@ -23,11 +23,8 @@ export async function checkDbConnection(): Promise<boolean> {
 }
 
 export function dbConfigHint(): string {
-  if (process.env.BACKEND_URL) {
-    return "API is proxied to BACKEND_URL. Ensure the Render service is running and has DATABASE_URL set.";
-  }
   if (!process.env.DATABASE_URL) {
-    return "Set DATABASE_URL on Vercel (Neon PostgreSQL recommended) or configure BACKEND_URL to a running Render API.";
+    return "Configure the Neon backend database connection.";
   }
   return "DATABASE_URL is set but the database is unreachable. Check the connection string and network access.";
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -67,19 +67,22 @@ export default function AdminCourseContentPage() {
   const [linkForm, setLinkForm] = useState({ sectionId: "", title: "", url: "" });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const load = () =>
-    fetch(`/api/courses/${courseId}/content`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.course) {
-          setCourse(d.course);
-          setHours(d.course.completionHours);
-        }
-      });
+  const load = useCallback(
+    () =>
+      fetch(`/api/courses/${courseId}/content`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.course) {
+            setCourse(d.course);
+            setHours(d.course.completionHours);
+          }
+        }),
+    [courseId]
+  );
 
   useEffect(() => {
     load();
-  }, [courseId]);
+  }, [load]);
 
   useEffect(() => {
     if (localPreviewUrl) URL.revokeObjectURL(localPreviewUrl);

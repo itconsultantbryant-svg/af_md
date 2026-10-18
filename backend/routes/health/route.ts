@@ -8,7 +8,7 @@ export async function GET() {
   if (db) {
     return json({
       status: "ok",
-      service: process.env.BACKEND_URL ? "af-md-api (proxied)" : "af-md-api",
+      service: "af-md-api",
       db: true,
       timestamp: new Date().toISOString(),
     });
@@ -18,7 +18,6 @@ export async function GET() {
     {
       status: "degraded",
       db: false,
-      backendUrl: process.env.BACKEND_URL || null,
       hint: dbConfigHint(),
     },
     503

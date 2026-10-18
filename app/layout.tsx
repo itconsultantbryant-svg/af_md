@@ -26,10 +26,10 @@ const spaceMono = Space_Mono({
   weight: ["400", "700"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://afrimindai.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://afrimindai.com"
-  ),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${COMPANY_NAME} — ${COMPANY_TAGLINE}`,
     template: `%s | ${COMPANY_SHORT}`,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     title: `${COMPANY_NAME} — ${COMPANY_TAGLINE}`,
     description:
       "Africa's premier Tech & AI consulting agency. Custom AI solutions for businesses, governments, and organizations.",
-    url: "https://afrimindai.com",
+    url: SITE_URL,
     siteName: COMPANY_NAME,
     images: [
       { url: "/afrimind_logo.png", width: 429, height: 350, alt: COMPANY_NAME },

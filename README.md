@@ -5,13 +5,13 @@ AfriMind Tech&AI Consulting Agency — full-stack Next.js site with LMS, admin p
 ## Stack
 
 - Next.js 14 · TypeScript · Tailwind CSS · Framer Motion
-- Prisma · SQLite · JWT auth
+- Neon Functions · Neon PostgreSQL · Neon Object Storage · Prisma · JWT auth
 
 ## Deployment
 
-See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for Render (backend) + Vercel (frontend) setup.
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for Neon (API, database, uploads) + Vercel (frontend) setup.
 
-Quick local Postgres:
+Local development uses separate frontend and backend processes; see the deployment guide. Optional local Postgres:
 
 ```bash
 docker compose up -d
