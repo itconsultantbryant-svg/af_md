@@ -4,16 +4,18 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { CountUp } from "@/components/ui/CountUp";
 import { fadeUp, staggerContainer } from "@/lib/animations";
-
-const stats = [
-  { value: 50, suffix: "+", label: "AI Projects Completed" },
-  { value: 15, suffix: "+", label: "Industries Served" },
-  { prefix: "$", value: 2, suffix: "M+", label: "Value Delivered for Clients" },
-  { value: 100, suffix: "%", label: "African-Founded & Operated" },
-];
+import { usePublicStats } from "@/lib/hooks/usePublicStats";
 
 export function StatsBanner() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
+  const data = usePublicStats();
+
+  const stats = [
+    { value: data.courses, suffix: "", label: "Training Courses Offered" },
+    { value: data.enrollments, suffix: "", label: "Course Enrollments" },
+    { value: data.clients, suffix: "", label: "Organizations Served" },
+    { value: data.countries, suffix: "", label: "Countries Reached" },
+  ];
 
   return (
     <section className="py-16 bg-gold-gradient">
@@ -27,11 +29,7 @@ export function StatsBanner() {
         {stats.map((stat) => (
           <motion.div key={stat.label} variants={fadeUp} className="text-center">
             <p className="font-display text-4xl md:text-5xl font-bold text-brand-navy">
-              <CountUp
-                end={stat.value}
-                suffix={stat.suffix}
-                prefix={stat.prefix}
-              />
+              <CountUp end={stat.value} suffix={stat.suffix} />
             </p>
             <p className="text-brand-navy/80 text-sm mt-2 font-medium">
               {stat.label}

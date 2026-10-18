@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { useAuth } from "@/lib/hooks/useAuth";
 
 function LoginForm() {
@@ -66,7 +67,7 @@ function LoginForm() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="email" required className={ic} placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input type="password" required className={ic} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <PasswordInput required className={ic} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <Button type="submit" variant="primary" className="w-full" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
           </Button>

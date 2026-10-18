@@ -28,6 +28,30 @@ The Vercel frontend still serves the pre-migration build (its API routes talk to
 4. Re-run the data sync immediately before cutover to capture writes made since the initial copy (the migration script exports every table as CSV and reloads it; see the repository history for the one-off script), then confirm counts match.
 5. After Vercel is verified, the previous database can be retired once a database and file backup are retained. Deleting repository deployment files does not delete cloud resources.
 
+## Environment variables
+
+Neon Function `api` (set by `neon deploy` from `.env.local`; the database and object-storage credentials below are injected automatically by Neon):
+
+| Variable | Purpose |
+| --- | --- |
+| `JWT_SECRET` | Signs and verifies session tokens; must match Vercel. |
+| `ORIGIN_SECRET` | Server-only shared secret between the Vercel proxy and the Function. |
+| `DATABASE_URL` / `DATABASE_URL_UNPOOLED` | Injected by Neon (pooled / direct). |
+| `AWS_ENDPOINT_URL_S3`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Injected by Neon for the `course-uploads` bucket. |
+| `OPENAI_API_KEY`, `SMTP_HOST`, `TWILIO_ACCOUNT_SID` | Optional integrations. |
+
+Vercel production project (the frontend never connects to Postgres directly):
+
+| Variable | Value |
+| --- | --- |
+| `NEON_BACKEND_URL` | The Function invocation URL from `neon functions get api`. |
+| `ORIGIN_SECRET` | Same value as the Function. |
+| `JWT_SECRET` | Same value as the Function. |
+| `NEXT_PUBLIC_SITE_URL` | Public site origin (e.g. `https://af-md.vercel.app`). |
+| `NEXT_PUBLIC_FORMSPREE_ID`, `NEXT_PUBLIC_WHATSAPP_NUMBER` | Public contact widgets (optional). |
+
+Do not set `DATABASE_URL`, `BACKEND_URL`, `FRONTEND_URL`, or `DEPLOY_TARGET` on Vercel. The `NEON_BACKEND_URL`, `ORIGIN_SECRET`, and `JWT_SECRET` values live in the gitignored `.env.local`.
+
 ## Local development
 
 Use Node 24. Copy `.env.example` to your local environment files only if they do not exist; preserve existing secrets. Set the pooled/direct URLs for an isolated development branch, shared secrets, and the branch's S3 credentials. `neon env pull` obtains branch variables after authentication and linking.
@@ -49,4 +73,4 @@ Schema changes are explicit (`npm run db:push` for a reviewed change on a develo
 
 ## Workspace verification
 
-The frontend production build, TypeScript check, and six backend tests pass. Lint passes with an existing React hook dependency warning in the course-content admin page. Local end-to-end checks passed for frontend-to-backend proxying, JSON request bodies, logout cookies, admin redirects, and a read-only health query against the existing Neon database. The Function bundle is about 9 MB compressed and 22 MB uncompressed; its build checks the Linux ARM64 engine and archive limits. PDF extraction was tested from the packaged runtime. Cloud deployment, new project creation, source-data reconciliation, object-storage provisioning/import, and live upload/login verification remain pending account access.
+The frontend production build, TypeScript check, lint, six backend tests, and the isolated Neon bundle test all pass. The Neon project, Function, Postgres data migration, and `course-uploads` bucket are provisioned and verified end to end: the native Function URL returns 401 without `X-Secret`, `/api/health` reports `db: true`, `/api/courses` returns 54 courses from the migrated database, admin sign-in succeeds, and upload/read/range playback through the Function works. Remaining work is the Vercel environment and cutover described above.

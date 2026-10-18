@@ -32,6 +32,7 @@ import * as route29 from "./routes/courses/[id]/upload/route";
 import * as route30 from "./routes/enrollments/[id]/route";
 import * as route31 from "./routes/learning/[id]/route";
 import * as route32 from "./routes/media/[...path]/route";
+import * as route33 from "./routes/stats/route";
 
 export const routes = [
   { path: "/api/admin/stats", handlers: route0 },
@@ -67,4 +68,5 @@ export const routes = [
   { path: "/api/enrollments/[id]", handlers: route30 },
   { path: "/api/learning/[id]", handlers: route31 },
   { path: "/api/media/[...path]", handlers: route32 },
+  { path: "/api/stats", handlers: route33 },
 ];

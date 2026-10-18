@@ -33,14 +33,6 @@ export const capabilities = [
   },
 ];
 
-export const stats = [
-  { value: "50+", label: "Projects Delivered" },
-  { value: "15+", label: "Industries Served" },
-  { value: "6", label: "Countries Active" },
-  { value: "54", label: "Training Courses" },
-  { value: "100%", label: "African-Founded" },
-];
-
 export const approach = [
   {
     step: "01",

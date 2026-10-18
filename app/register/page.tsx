@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { useAuth } from "@/lib/hooks/useAuth";
 
 function RegisterForm() {
@@ -64,7 +65,7 @@ function RegisterForm() {
           </div>
           <input type="email" required className={ic} placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           <input className={ic} placeholder="Phone / WhatsApp (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-          <input type="password" required minLength={8} className={ic} placeholder="Password (min 8 chars)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+          <PasswordInput required minLength={8} className={ic} placeholder="Password (min 8 chars)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
           <Button type="submit" variant="primary" className="w-full" disabled={loading}>
             {loading ? "Creating..." : "Create Account"}
           </Button>

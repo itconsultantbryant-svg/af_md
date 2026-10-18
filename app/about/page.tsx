@@ -16,10 +16,10 @@ import { teamMembers, partners, milestones } from "@/lib/data/team";
 import {
   coreValues,
   capabilities,
-  stats,
   approach,
   certifications,
 } from "@/lib/data/about";
+import { usePublicStats } from "@/lib/hooks/usePublicStats";
 import { COMPANY_NAME } from "@/lib/brand";
 
 const FloatingShapes = dynamic(
@@ -33,6 +33,15 @@ export default function AboutPage() {
   const timelineRef = useInView({ triggerOnce: true, threshold: 0.1 });
   const statsRef = useInView({ triggerOnce: true, threshold: 0.2 });
   const approachRef = useInView({ triggerOnce: true, threshold: 0.15 });
+  const data = usePublicStats();
+
+  const stats = [
+    { value: data.courses, label: "Training Courses" },
+    { value: data.learners, label: "Enrolled Learners" },
+    { value: data.clients, label: "Client Organizations" },
+    { value: data.countries, label: "Countries Reached" },
+    { value: data.industries, label: "Industries Served" },
+  ];
 
   return (
     <main>

@@ -17,6 +17,7 @@ import {
   PlayCircle,
   MessageSquare,
   BarChart3,
+  User,
 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ const links = [
   { href: "/admin/contracts", label: "Contracts", icon: FileText },
   { href: "/admin/subscriptions", label: "Subscriptions", icon: Mail },
   { href: "/admin/export", label: "Export Data", icon: Download },
+  { href: "/admin/profile", label: "My Profile", icon: User },
 ];
 
 export function AdminSidebar() {

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { CountUp } from "@/components/ui/CountUp";
 import { CanvasSkeleton } from "@/components/ui/Skeleton";
 import { fadeUp, staggerContainer } from "@/lib/animations";
+import { usePublicStats } from "@/lib/hooks/usePublicStats";
 import { COMPANY_NAME } from "@/lib/brand";
 
 const ParticleField = dynamic(
@@ -16,15 +17,17 @@ const ParticleField = dynamic(
   { ssr: false }
 );
 
-const stats = [
-  { value: 50, suffix: "+", label: "Projects Delivered" },
-  { value: 15, suffix: "+", label: "Industries Served" },
-  { value: 6, suffix: "", label: "Countries Active" },
-  { value: 30, suffix: "+", label: "AI Models Deployed" },
-  { value: 54, suffix: "", label: "Training Courses" },
-];
-
 export function HeroSection() {
+  const stats = usePublicStats();
+
+  const items = [
+    { value: stats.courses, suffix: "", label: "Training Courses" },
+    { value: stats.learners, suffix: "", label: "Enrolled Learners" },
+    { value: stats.clients, suffix: "", label: "Client Organizations" },
+    { value: stats.countries, suffix: "", label: "Countries Reached" },
+    { value: stats.visitors, suffix: "", label: "Site Visitors" },
+  ];
+
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       <Suspense fallback={<CanvasSkeleton className="absolute inset-0" />}>
@@ -116,7 +119,7 @@ export function HeroSection() {
         className="relative z-10 bg-brand-darker/90 backdrop-blur-sm border-t border-white/5"
       >
         <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-5 gap-6">
-          {stats.map((stat, i) => (
+          {items.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}

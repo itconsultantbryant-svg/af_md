@@ -31,9 +31,9 @@ const companyLinks = [
 ];
 
 const legalLinks = [
-  { href: "/contact", label: "Privacy Policy" },
-  { href: "/contact", label: "Terms of Service" },
-  { href: "/contact", label: "Cookie Policy" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/cookies", label: "Cookie Policy" },
 ];
 
 const socialLinks = [
