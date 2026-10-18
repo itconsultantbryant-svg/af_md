@@ -11,6 +11,8 @@ export async function GET() {
       clients,
       enrollments,
       visitors,
+      sessions,
+      subscriptions,
       industries,
       clientCountries,
       learnerCountries,
@@ -20,6 +22,8 @@ export async function GET() {
       prisma.client.count(),
       prisma.enrollment.count(),
       prisma.siteVisitor.count(),
+      prisma.siteSession.count(),
+      prisma.newsletterSubscription.count({ where: { active: true } }),
       prisma.client.findMany({
         where: { industry: { not: null } },
         distinct: ["industry"],
@@ -51,6 +55,8 @@ export async function GET() {
         countries,
         enrollments,
         visitors,
+        sessions,
+        subscriptions,
         industries: industries.length,
       },
     });

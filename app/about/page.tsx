@@ -37,10 +37,10 @@ export default function AboutPage() {
 
   const stats = [
     { value: data.courses, label: "Training Courses" },
-    { value: data.learners, label: "Enrolled Learners" },
-    { value: data.clients, label: "Client Organizations" },
-    { value: data.countries, label: "Countries Reached" },
-    { value: data.industries, label: "Industries Served" },
+    { value: data.learners, label: "Active Learners" },
+    { value: data.visitors, label: "Site Visitors" },
+    { value: data.sessions, label: "Learning Sessions" },
+    { value: data.subscriptions, label: "Newsletter Subscribers" },
   ];
 
   return (

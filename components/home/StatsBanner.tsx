@@ -12,9 +12,9 @@ export function StatsBanner() {
 
   const stats = [
     { value: data.courses, suffix: "", label: "Training Courses Offered" },
-    { value: data.enrollments, suffix: "", label: "Course Enrollments" },
-    { value: data.clients, suffix: "", label: "Organizations Served" },
-    { value: data.countries, suffix: "", label: "Countries Reached" },
+    { value: data.visitors, suffix: "", label: "Site Visitors" },
+    { value: data.sessions, suffix: "", label: "Learning Sessions" },
+    { value: data.subscriptions, suffix: "", label: "Newsletter Subscribers" },
   ];
 
   return (

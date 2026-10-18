@@ -9,6 +9,8 @@ export interface PublicStats {
   countries: number;
   enrollments: number;
   visitors: number;
+  sessions: number;
+  subscriptions: number;
   industries: number;
 }
 
@@ -19,6 +21,8 @@ const EMPTY: PublicStats = {
   countries: 0,
   enrollments: 0,
   visitors: 0,
+  sessions: 0,
+  subscriptions: 0,
   industries: 0,
 };
 

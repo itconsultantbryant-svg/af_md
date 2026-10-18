@@ -22,10 +22,10 @@ export function HeroSection() {
 
   const items = [
     { value: stats.courses, suffix: "", label: "Training Courses" },
-    { value: stats.learners, suffix: "", label: "Enrolled Learners" },
-    { value: stats.clients, suffix: "", label: "Client Organizations" },
-    { value: stats.countries, suffix: "", label: "Countries Reached" },
     { value: stats.visitors, suffix: "", label: "Site Visitors" },
+    { value: stats.sessions, suffix: "", label: "Learning Sessions" },
+    { value: stats.subscriptions, suffix: "", label: "Newsletter Subscribers" },
+    { value: stats.learners, suffix: "", label: "Active Learners" },
   ];
 
   return (
