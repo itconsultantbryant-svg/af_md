@@ -160,9 +160,9 @@ export function ClientProjectsSection() {
                 )}
               </div>
 
-              <span className="mt-4 inline-flex items-center gap-1 text-brand-gold text-sm">
-                Visit project
-                <ExternalLink size={14} />
+              <span className="mt-4 inline-flex items-center gap-1 text-brand-gold text-sm break-all">
+                <ExternalLink size={14} className="shrink-0" />
+                {href.replace(/^https?:\/\//, "")}
               </span>
             </a>
           );

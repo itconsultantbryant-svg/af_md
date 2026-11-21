@@ -18,6 +18,7 @@ export async function GET() {
       clientCountries,
       learnerCountries,
       highlights,
+      totalSiteStats,
     ] = await Promise.all([
       prisma.course.count({ where: { published: true } }),
       prisma.user.count({ where: { role: "LEARNER" } }),
@@ -52,6 +53,7 @@ export async function GET() {
           suffix: true,
         },
       }),
+      prisma.siteStat.count(),
     ]);
 
     const countries = new Set(
@@ -75,10 +77,12 @@ export async function GET() {
         highlights:
           highlights.length > 0
             ? highlights
-            : defaultSiteStats.map((stat, index) => ({
-                id: `default-${index}`,
-                ...stat,
-              })),
+            : totalSiteStats === 0
+              ? defaultSiteStats.map((stat, index) => ({
+                  id: `default-${index}`,
+                  ...stat,
+                }))
+              : [],
       },
     });
   } catch (e) {
