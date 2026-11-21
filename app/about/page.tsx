@@ -11,6 +11,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Card } from "@/components/ui/Card";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { Button } from "@/components/ui/Button";
+import { CountUp } from "@/components/ui/CountUp";
 import { fadeUp, staggerContainer, slideLeft, slideRight } from "@/lib/animations";
 import { teamMembers, partners, milestones } from "@/lib/data/team";
 import {
@@ -35,13 +36,12 @@ export default function AboutPage() {
   const approachRef = useInView({ triggerOnce: true, threshold: 0.15 });
   const data = usePublicStats();
 
-  const stats = [
-    { value: data.courses, label: "Training Courses" },
-    { value: data.learners, label: "Active Learners" },
-    { value: data.visitors, label: "Site Visitors" },
-    { value: data.sessions, label: "Learning Sessions" },
-    { value: data.subscriptions, label: "Newsletter Subscribers" },
-  ];
+  const stats = data.highlights.map((stat) => ({
+    value: stat.value,
+    label: stat.label,
+    prefix: stat.prefix,
+    suffix: stat.suffix,
+  }));
 
   return (
     <main>
@@ -84,12 +84,16 @@ export default function AboutPage() {
             initial="hidden"
             animate={statsRef.inView ? "visible" : "hidden"}
             variants={staggerContainer}
-            className="grid grid-cols-2 md:grid-cols-5 gap-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
           >
             {stats.map((stat) => (
               <motion.div key={stat.label} variants={fadeUp} className="text-center">
                 <p className="font-display text-3xl md:text-4xl font-bold text-brand-gold">
-                  {stat.value}
+                  <CountUp
+                    end={stat.value}
+                    prefix={stat.prefix}
+                    suffix={stat.suffix}
+                  />
                 </p>
                 <p className="text-brand-muted text-sm mt-1">{stat.label}</p>
               </motion.div>
@@ -284,41 +288,50 @@ export default function AboutPage() {
 
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <SectionHeader title="Our Team" />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SectionHeader title="Our Team" subtitle="The people building AI for Africa" />
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {teamMembers.map((member) => (
-              <Card key={member.name} hover className="text-center overflow-hidden">
-                <div className="relative w-24 h-24 rounded-full border-2 border-brand-gold/30 overflow-hidden mx-auto mb-4">
+              <Card
+                key={member.name}
+                hover
+                className="text-center overflow-hidden h-full flex flex-col"
+              >
+                <div className="relative w-32 h-32 rounded-full border-2 border-brand-gold/30 overflow-hidden mx-auto mb-4 bg-brand-dark">
                   <SiteImage
+                    src={member.image}
                     alt={member.name}
                     title={member.initials}
                     variant="team"
                     subtitle={member.role}
                     fill
                     className="rounded-full"
-                    sizes="96px"
+                    sizes="128px"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-brand-dark/50 text-brand-gold text-xl font-bold">
-                    {member.initials}
-                  </div>
                 </div>
-                <h3 className="font-display text-lg font-semibold text-white">
+                <h3 className="font-display text-xl font-semibold text-white">
                   {member.name}
                 </h3>
-                <p className="text-brand-muted text-sm mb-3">{member.role}</p>
+                <p className="text-brand-gold text-sm font-medium mb-3">
+                  {member.role}
+                </p>
+                <p className="text-brand-muted text-sm leading-relaxed mb-5 flex-1">
+                  {member.bio}
+                </p>
                 <a
                   href={member.linkedin}
-                  className="text-brand-gold hover:text-brand-gold-light cursor-hover inline-flex"
-                  aria-label="LinkedIn"
+                  className="text-brand-gold hover:text-brand-gold-light cursor-hover inline-flex justify-center"
+                  aria-label={`${member.name} on LinkedIn`}
                 >
                   <LinkedInIcon size={18} />
                 </a>
               </Card>
             ))}
+          </div>
+          <div className="mt-6 max-w-md mx-auto">
             <Link href="/contact">
               <Card
                 hover
-                className="text-center h-full flex flex-col items-center justify-center min-h-[200px] border-dashed"
+                className="text-center flex flex-col items-center justify-center min-h-[160px] border-dashed"
               >
                 <Plus className="w-10 h-10 text-brand-gold mb-3" />
                 <h3 className="font-display text-lg font-semibold text-brand-gold">

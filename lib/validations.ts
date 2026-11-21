@@ -68,3 +68,30 @@ export const contractSchema = z.object({
   stages: z.array(z.object({ name: z.string(), status: z.string(), dueDate: z.string().optional() })).optional(),
   status: z.enum(["DRAFT", "ACTIVE", "COMPLETED", "CANCELLED"]).optional(),
 });
+
+export const siteStatSchema = z.object({
+  key: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9_-]+$/, "Key may only contain lowercase letters, numbers, - and _")
+    .optional(),
+  label: z.string().min(2, "Label is required"),
+  value: z.number().min(0, "Value must be zero or greater"),
+  prefix: z.string().optional().default(""),
+  suffix: z.string().optional().default(""),
+  sortOrder: z.number().int().optional().default(0),
+  published: z.boolean().optional().default(true),
+});
+
+export const portfolioProjectSchema = z.object({
+  name: z.string().min(2, "Project name is required"),
+  url: z.string().min(1, "Project URL is required"),
+  logoUrl: z.string().optional().nullable(),
+  clientName: z.string().min(2, "Client name is required"),
+  clientPhone: z.string().optional().nullable(),
+  clientEmail: z.string().email("Enter a valid client email").or(z.literal("")).optional().nullable(),
+  clientAddress: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  published: z.boolean().optional().default(true),
+  sortOrder: z.number().int().optional().default(0),
+});

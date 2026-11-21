@@ -33,6 +33,13 @@ import * as route30 from "./routes/enrollments/[id]/route";
 import * as route31 from "./routes/learning/[id]/route";
 import * as route32 from "./routes/media/[...path]/route";
 import * as route33 from "./routes/stats/route";
+import * as route34 from "./routes/site-stats/route";
+import * as route35 from "./routes/site-stats/admin/route";
+import * as route36 from "./routes/portfolio-projects/route";
+import * as route37 from "./routes/portfolio-projects/admin/route";
+import * as route38 from "./routes/portfolio-projects/upload/route";
+import * as route39 from "./routes/site-stats/[id]/route";
+import * as route40 from "./routes/portfolio-projects/[id]/route";
 
 export const routes = [
   { path: "/api/admin/stats", handlers: route0 },
@@ -69,4 +76,11 @@ export const routes = [
   { path: "/api/learning/[id]", handlers: route31 },
   { path: "/api/media/[...path]", handlers: route32 },
   { path: "/api/stats", handlers: route33 },
+  { path: "/api/site-stats/admin", handlers: route35 },
+  { path: "/api/site-stats", handlers: route34 },
+  { path: "/api/portfolio-projects/admin", handlers: route37 },
+  { path: "/api/portfolio-projects/upload", handlers: route38 },
+  { path: "/api/portfolio-projects", handlers: route36 },
+  { path: "/api/site-stats/[id]", handlers: route39 },
+  { path: "/api/portfolio-projects/[id]", handlers: route40 },
 ];

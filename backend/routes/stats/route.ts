@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { json, error } from "@/lib/api";
+import { defaultSiteStats } from "@/lib/data/site-stats";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function GET() {
       industries,
       clientCountries,
       learnerCountries,
+      highlights,
     ] = await Promise.all([
       prisma.course.count({ where: { published: true } }),
       prisma.user.count({ where: { role: "LEARNER" } }),
@@ -38,6 +40,18 @@ export async function GET() {
         distinct: ["country"],
         select: { country: true },
       }),
+      prisma.siteStat.findMany({
+        where: { published: true },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        select: {
+          id: true,
+          key: true,
+          label: true,
+          value: true,
+          prefix: true,
+          suffix: true,
+        },
+      }),
     ]);
 
     const countries = new Set(
@@ -58,6 +72,13 @@ export async function GET() {
         sessions,
         subscriptions,
         industries: industries.length,
+        highlights:
+          highlights.length > 0
+            ? highlights
+            : defaultSiteStats.map((stat, index) => ({
+                id: `default-${index}`,
+                ...stat,
+              })),
       },
     });
   } catch (e) {

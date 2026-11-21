@@ -295,3 +295,34 @@ model VisitorEvent {
   visitor SiteVisitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
   session SiteSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 }
+
+/// Editable public website statistics (projects, clients, funds, partners).
+model SiteStat {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  value     Float    @default(0)
+  prefix    String   @default("")
+  suffix    String   @default("")
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Completed client projects managed from the admin dashboard.
+model PortfolioProject {
+  id            String   @id @default(cuid())
+  name          String
+  url           String
+  logoUrl       String?
+  clientName    String
+  clientPhone   String?
+  clientEmail   String?
+  clientAddress String?
+  description   String?
+  published     Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

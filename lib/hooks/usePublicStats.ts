@@ -1,6 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { defaultSiteStats } from "@/lib/data/site-stats";
+
+export interface PublicHighlight {
+  id: string;
+  key: string;
+  label: string;
+  value: number;
+  prefix: string;
+  suffix: string;
+}
 
 export interface PublicStats {
   courses: number;
@@ -12,7 +22,13 @@ export interface PublicStats {
   sessions: number;
   subscriptions: number;
   industries: number;
+  highlights: PublicHighlight[];
 }
+
+const FALLBACK_HIGHLIGHTS: PublicHighlight[] = defaultSiteStats.map((stat) => ({
+  ...stat,
+  id: `fallback-${stat.key}`,
+}));
 
 const EMPTY: PublicStats = {
   courses: 0,
@@ -24,6 +40,7 @@ const EMPTY: PublicStats = {
   sessions: 0,
   subscriptions: 0,
   industries: 0,
+  highlights: FALLBACK_HIGHLIGHTS,
 };
 
 export function usePublicStats(): PublicStats {
@@ -31,10 +48,14 @@ export function usePublicStats(): PublicStats {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/stats")
+    fetch("/api/stats", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (active && data?.stats) setStats({ ...EMPTY, ...data.stats });
+        if (!active || !data?.stats) return;
+        const highlights = Array.isArray(data.stats.highlights)
+          ? data.stats.highlights
+          : FALLBACK_HIGHLIGHTS;
+        setStats({ ...EMPTY, ...data.stats, highlights });
       })
       .catch(() => {});
     return () => {

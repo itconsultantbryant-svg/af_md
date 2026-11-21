@@ -14,6 +14,7 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "npx tsx prisma/seed.ts",
+    "db:seed-site": "npx tsx prisma/seed-site-content.ts",
     "db:reset-progress": "npx tsx prisma/reset-progress.ts",
     "logo:transparent": "python3 scripts/remove-logo-bg.py",
     "db:setup": "prisma db push && npx tsx prisma/seed.ts",

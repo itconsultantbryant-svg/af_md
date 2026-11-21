@@ -20,13 +20,7 @@ const ParticleField = dynamic(
 export function HeroSection() {
   const stats = usePublicStats();
 
-  const items = [
-    { value: stats.courses, suffix: "", label: "Training Courses" },
-    { value: stats.visitors, suffix: "", label: "Site Visitors" },
-    { value: stats.sessions, suffix: "", label: "Learning Sessions" },
-    { value: stats.subscriptions, suffix: "", label: "Newsletter Subscribers" },
-    { value: stats.learners, suffix: "", label: "Active Learners" },
-  ];
+  const items = stats.highlights.slice(0, 4);
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
@@ -118,17 +112,21 @@ export function HeroSection() {
         transition={{ delay: 0.8, duration: 0.6 }}
         className="relative z-10 bg-brand-darker/90 backdrop-blur-sm border-t border-white/5"
       >
-        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {items.map((stat, i) => (
             <motion.div
-              key={stat.label}
+              key={stat.key}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 + i * 0.08 }}
               className="text-center group"
             >
               <p className="font-display text-3xl md:text-4xl font-bold text-brand-gold group-hover:scale-105 transition-transform">
-                <CountUp end={stat.value} suffix={stat.suffix} />
+                <CountUp
+                  end={stat.value}
+                  prefix={stat.prefix}
+                  suffix={stat.suffix}
+                />
               </p>
               <p className="text-brand-muted text-xs md:text-sm mt-1">{stat.label}</p>
             </motion.div>

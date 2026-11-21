@@ -10,12 +10,7 @@ export function StatsBanner() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
   const data = usePublicStats();
 
-  const stats = [
-    { value: data.courses, suffix: "", label: "Training Courses Offered" },
-    { value: data.visitors, suffix: "", label: "Site Visitors" },
-    { value: data.sessions, suffix: "", label: "Learning Sessions" },
-    { value: data.subscriptions, suffix: "", label: "Newsletter Subscribers" },
-  ];
+  const stats = data.highlights.slice(0, 4);
 
   return (
     <section className="py-16 bg-gold-gradient">
@@ -27,9 +22,13 @@ export function StatsBanner() {
         className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8"
       >
         {stats.map((stat) => (
-          <motion.div key={stat.label} variants={fadeUp} className="text-center">
+          <motion.div key={stat.key} variants={fadeUp} className="text-center">
             <p className="font-display text-4xl md:text-5xl font-bold text-brand-navy">
-              <CountUp end={stat.value} suffix={stat.suffix} />
+              <CountUp
+                end={stat.value}
+                prefix={stat.prefix}
+                suffix={stat.suffix}
+              />
             </p>
             <p className="text-brand-navy/80 text-sm mt-2 font-medium">
               {stat.label}

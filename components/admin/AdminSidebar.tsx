@@ -18,12 +18,16 @@ import {
   MessageSquare,
   BarChart3,
   User,
+  TrendingUp,
+  Briefcase,
 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/site-stats", label: "Site Stats", icon: TrendingUp },
+  { href: "/admin/portfolio", label: "Portfolio Projects", icon: Briefcase },
   { href: "/admin/analytics", label: "Site Analytics", icon: BarChart3 },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/enrollments", label: "Enrollments", icon: GraduationCap },
